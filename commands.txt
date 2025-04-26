@@ -1,0 +1,48 @@
+pip install -U python-telegram-bot
+
+
+
+
+Урок 44
+
+В commands: 
+  ["Видалити весь розклад"],
+  ["Видалити день з розкладу"]
+
+В станах (7 рядок):
+    CHOOSING, ADDING_DAY, ADDING_TIME, ADDING_TITLE, ASK_DAY, DELETE_DAY = range(6)
+
+В db.py:
+  def delete_all_schedule():
+    conn = sqlite3.connect(DATABASE_PATH)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM schedule")
+    conn.commit()
+    conn.close()
+
+  def delete_schedule_by_day(day):
+      conn = sqlite3.connect(DATABASE_PATH)
+      cursor = conn.cursor()
+      cursor.execute("DELETE FROM schedule WHERE day = ?", (day,))
+      conn.commit()
+      conn.close()
+
+В handle_choice (24 рядок):
+  elif choice == "Видалити весь розклад":
+    delete_all_schedule()
+    await update.message.reply_text("Весь розклад було видалено ❌")
+
+  elif choice == "Видалити день з розкладу":
+      await update.message.reply_text("Введи день тижня, який потрібно видалити:")
+      return DELETE_DAY
+
+В bot.py в самому низу:
+  async def delete_day_entry(update: telegram.Update, context: telegram.ext.ContextTypes.DEFAULT_TYPE):
+    day = update.message.text
+    delete_schedule_by_day(day)
+    await update.message.reply_text(f"Розклад на {day} було видалено ✅")
+    return telegram.ext.ConversationHandler.END
+
+В states (82 рядок):
+  DELETE_DAY: [telegram.ext.MessageHandler(telegram.ext.filters.TEXT & ~telegram.ext.filters.COMMAND, delete_day_entry)],  # ⬅️ НОВИЙ СТАН
+
