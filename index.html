@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Аккордеон</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fdfd96;
+      padding: 30px;
+    }
+
+    .accordion {
+      width: 300px;
+      background-color: #00796b;
+      color: white;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .accordion-item {
+      border-top: 1px solid #004d40;
+    }
+
+    .accordion-header {
+      padding: 15px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .accordion-header::after {
+      /* content: "▾"; */
+      content: ">";
+      position: absolute;
+      right: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .accordion-header.active::after {
+      transform: rotate(180deg);
+    }
+
+    .accordion-content {
+      background-color: #e0f2f1;
+      color: black;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      padding: 0 15px;
+    }
+
+    .accordion-content.open {
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="accordion" id="accordion">
+    <div class="accordion-item">
+      <div class="accordion-header">Collapsible item #1</div>
+      <div class="accordion-content">
+        При натисканні на елемент меню розгортається. <br>
+        При повторному натисканні меню згортається.
+      </div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Collapsible item #2</div>
+      <div class="accordion-content">Вміст пункту 2</div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Collapsible item #3</div>
+      <div class="accordion-content">Вміст пункту 3</div>
+    </div>
+    <div class="accordion-item">
+      <div class="accordion-header">Collapsible item #4</div>
+      <div class="accordion-content">Вміст пункту 4</div>
+    </div>
+  </div>
+
+  <script>
+    const accordion = document.getElementById('accordion');
+
+    accordion.addEventListener('click', function(e) {
+      if (e.target.classList.contains('accordion-header')) {
+        const header = e.target;
+        const content = header.nextElementSibling;
+
+        const isOpen = content.classList.contains('open');
+
+        document.querySelectorAll('.accordion-content').forEach(content => {
+          content.style.maxHeight = null;
+          content.classList.remove('open');
+        });
+        document.querySelectorAll('.accordion-header').forEach(header => {
+          header.classList.remove('active');
+        });
+
+        if (!isOpen) {
+          content.style.maxHeight = content.scrollHeight + "px";
+          content.classList.add('open');
+          header.classList.add('active');
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
